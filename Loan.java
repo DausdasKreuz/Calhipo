@@ -7,12 +7,13 @@ public class Loan {
     public double rate;
     public int period;
     public double instalment;
+    public double maxIndebtedness;
 
-    public Loan(String bankdata, int debtdata, double differentialdata, int perioddata) {
-        bank = bankdata;
-        debt = debtdata;
-        differential = differentialdata;
-        period = perioddata;
+    public Loan(String bankData, double differentialData, int periodData, double maxIndebtednessData) {
+        bank = bankData;
+        differential = differentialData;
+        period = periodData;
+        maxIndebtedness = maxIndebtednessData;
     }
 
     public Loan() {
@@ -34,28 +35,25 @@ public class Loan {
 
         if (euribor == 0.0) {
             DataInPanel euriborPanel = new DataInPanel();
-        euribor = Double.parseDouble(euriborPanel.createPanel(50, 4, "Euribor", "It is needed the Euribor value"));
-        putEuribor(euribor);
+            euribor = Double.parseDouble(euriborPanel.createPanel(50, 4, "Euribor", "It is needed the Euribor value"));
+            calcRate();
         }
+
+        DataInPanel maxIndebtednessPanel = new DataInPanel();
+        maxIndebtedness = Double.parseDouble(maxIndebtednessPanel.createPanel(50, 10, "Indebtedness", "The bank only give you the money if the final indebtedness is less than:"));
     }
 
-    public void putEuribor(double euribordata) {
-        euribor = euribordata;
+    public void calcRate() {
         rate = euribor + differential;
-    }
-
-    public double giveEuribor() {
-        return euribor;
     }
 
     public void calcInstalment(int price, double initialCosts, int initialUser) {
         debt = price + initialCosts - initialUser;
-        //double pot;
-        //pot = Math.pow((1+rate/12/100),(-period*12));
         instalment = (debt*(rate/12)/(100*(1-(Math.pow((1+rate/12/100),(-period*12))))));
     }
 
-    public double debt(double instalmentFixed) {
+    public double calcDebt(double instalmentFixed) {
+        calcRate();
         return instalmentFixed * (100*(1-(Math.pow((1+rate/12/100),(-period*12))))) / (rate/12);
     }
 }

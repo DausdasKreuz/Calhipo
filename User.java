@@ -44,11 +44,20 @@ public class User {
         spendable = income - expenses - instalment;
     }
 
-    public void calcIndebtedness(double instalment) {
+    public void calcNewIndebtedness(double instalment) {
         indebtedness = indebtednessBefore + instalment / income;
     }
 
-    public double instalment(double indebtednessFixed) {
-        return (indebtednessFixed * income) - expenses;
+    public void calcIndebtedness(double indebtednessFixed) {
+        indebtedness = indebtednessFixed - indebtednessBefore;
+    }
+
+    public double maxInstalment(double indebtednessFixed) {
+        if ((indebtednessFixed * income) <= (income - expenses)) {
+            return (indebtednessFixed * income);
+        }
+        else {
+            return income - expenses;
+        }
     }
 }

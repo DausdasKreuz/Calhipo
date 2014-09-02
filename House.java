@@ -2,14 +2,12 @@ public class House {
     //Atributos: price, reform, expense
     public String name;
     public int price;
-    public int reform;
     public int expense;
-    public double initial;
+    public int initial;
 
-    public House(String namedata, int pricedata, int reformdata, int expensedata, double initialdata) {
+    public House(String namedata, int pricedata, int expensedata, int initialdata) {
         name = namedata;
         price = pricedata;
-        reform = reformdata;
         expense = expensedata;
         initial = initialdata;
     }
@@ -26,6 +24,24 @@ public class House {
         DataInPanel pricePanel = new DataInPanel();
         price = Integer.parseInt(pricePanel.createPanel(50, 10, "Price", "How much is the house"));
 
+        DataInPanel expensePanel = new DataInPanel();
+        expense = Integer.parseInt(expensePanel.createPanel(50, 10, "Expense", "How much is the house per month"));
+    }
+    
+    public void calcInitial(int price) {
+        initial = (int) (price * 0.07 + 2500);
+    }
+
+    public void calcPrice(double debt, int initialUser) {
+        price = (int) ((debt - 2500 + initialUser) / 1.07);
+    }
+
+    public void calcPrice(int initial) {
+        price = (int) (initial - 2500 / 0.07);
+    }
+}
+
+
 // Implementar la reforma de la casa: puede que con la
 //reforma no pueda comprarse la casa pero
 //o solo pueda reformarse parcialmente.
@@ -37,12 +53,3 @@ public class House {
 //            }
             //if (reformOption == 1) { //No
             //}
-
-        DataInPanel expensePanel = new DataInPanel();
-        expense = Integer.parseInt(expensePanel.createPanel(50, 10, "Expense", "How much is the house per month"));
-    }
-    
-    public void calcInitial(double price) {
-        initial = price * 0.07 + 2500;
-    }   
-}
