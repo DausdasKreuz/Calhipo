@@ -12,6 +12,9 @@ public class CalhipoMain {
 
         DecimalFormat formatter = new DecimalFormat("####");
         DecimalFormat formatterDecimal = new DecimalFormat("####.##");
+        AvaibleDialog aDialog = new AvaibleDialog();
+        NotAvaibleDialog nADialog = new NotAvaibleDialog();
+        InfoDialog iDialog = new InfoDialog();
 
 
         JOptionPane.showMessageDialog(null, "Wellcome to Calhipo calculator!");
@@ -30,27 +33,15 @@ public class CalhipoMain {
                 Loan loan = new Loan();
                 loan.calcInstalment(house.price, house.initial, user.initial);
                 house.calcInitial(house.price);
-                user.calcNewIndebtedness(loan.instalment);
+                user.calcIndebtedness(loan.instalment);
 
                 if (user.indebtedness <= loan.maxIndebtedness && house.initial <= user.initial) {
                     user.calcFreeMoney(loan.instalment);
-                    JOptionPane.showMessageDialog(null, "Ok " + user.name + "! You can buy this house.");
-                    JOptionPane.showMessageDialog(null, "You need from " + loan.bank + " bank: " + formatter.format(loan.debt));
-                    JOptionPane.showMessageDialog(null, "Instalment: " + loan.instalment);
-                    JOptionPane.showMessageDialog(null, "Your new indebtedness: " + formatter.format(user.indebtedness));
-                    JOptionPane.showMessageDialog(null, "Money to spend per month: " + formatter.format(user.spendable));
+                    aDialog.printMessages(user, loan);
                 }
-                else {
-                    JOptionPane.showMessageDialog(null, "I'm so sorry " + user.name + ". You can't buy this house.");
-                    if (user.initial < house.initial) {
-                        double lack = house.initial - user.initial;
-                        JOptionPane.showMessageDialog(null, "To get this house you need " + formatter.format(lack) + " more.");
-                    }
 
-                    if (user.indebtedness > loan.maxIndebtedness) {
-                        double lack = (user.indebtedness - loan.maxIndebtedness) * user.income;
-                        JOptionPane.showMessageDialog(null, "The bank need you get more money per month. Exactly " + formatter.format(lack) + " more.");
-                    }
+                else {
+                    nADialog.printMessages(user, house.initial, loan.maxIndebtedness);
                 }
             }
 
@@ -60,27 +51,15 @@ public class CalhipoMain {
                 Loan loan = new Loan("Invented", 2, 21, 0.4);
                 loan.calcInstalment(house.price, house.initial, user.initial);
                 house.calcInitial(house.price);
-                user.calcNewIndebtedness(loan.instalment);
+                user.calcIndebtedness(loan.instalment);
 
                 if (user.indebtedness <= loan.maxIndebtedness && house.initial <= user.initial) {
                     user.calcFreeMoney(loan.instalment);
-                    JOptionPane.showMessageDialog(null, "Ok " + user.name + "! You can buy this house.");
-                    JOptionPane.showMessageDialog(null, "You need from " + loan.bank + " bank: " + formatter.format(loan.debt));
-                    JOptionPane.showMessageDialog(null, "Instalment: " + loan.instalment);
-                    JOptionPane.showMessageDialog(null, "Your new indebtedness: " + formatter.format(user.indebtedness));
-                    JOptionPane.showMessageDialog(null, "Money to spend per month: " + formatter.format(user.spendable));
+                    aDialog.printMessages(user, loan);
                 }
-                else {
-                    JOptionPane.showMessageDialog(null, "I'm so sorry " + user.name + ". You can't buy this house.");
-                    if (user.initial < house.initial) {
-                        double lack = house.initial - user.initial;
-                        JOptionPane.showMessageDialog(null, "To get this house you need " + formatter.format(lack) + " more.");
-                    }
 
-                    if (user.indebtedness > loan.maxIndebtedness) {
-                        double lack = (user.indebtedness - loan.maxIndebtedness) * user.income;
-                        JOptionPane.showMessageDialog(null, "The bank need you get more money per month. Exactly " + formatter.format(lack) + " more.");
-                    }
+                else {
+                    nADialog.printMessages(user, house.initial, loan.maxIndebtedness);
                 }
             }
         }
@@ -97,7 +76,7 @@ public class CalhipoMain {
                 house.calcPrice(loan.calcDebt(user.maxInstalment(loan.maxIndebtedness)), user.initial);
                 loan.calcInstalment(house.price, house.initial, user.initial);
                 house.calcInitial(house.price);
-                user.calcNewIndebtedness(loan.instalment);
+                user.calcIndebtedness(loan.instalment);
 
                 if (user.initial < house.initial) {
                     house.calcPrice(user.initial);
@@ -105,11 +84,7 @@ public class CalhipoMain {
                 }
 
                 user.calcFreeMoney(loan.instalment);
-                JOptionPane.showMessageDialog(null, "Done. " + user.name + ", the most expensive house you can buy costs " + house.price + " Euros.");
-                JOptionPane.showMessageDialog(null, "You need from " + loan.bank + " bank: " + formatter.format(loan.debt));
-                JOptionPane.showMessageDialog(null, "Instalment: " + loan.instalment);
-                JOptionPane.showMessageDialog(null, "Your new indebtedness: " + formatter.format(user.indebtedness));
-                JOptionPane.showMessageDialog(null, "Money to spend per month: " + formatter.format(user.spendable));
+                iDialog.printMessages(user, house.price, loan);
             }
 
             if (loanOption == 1) { //condiciones del préstamo NO conocidas
@@ -130,14 +105,9 @@ public class CalhipoMain {
                 }
 
                 loan.calcInstalment(house.price, house.initial, user.initial);
-                user.calcNewIndebtedness(loan.instalment);
+                user.calcIndebtedness(loan.instalment);
                 user.calcFreeMoney(loan.instalment);
-
-                JOptionPane.showMessageDialog(null, "Done. " + user.name + ", the most expensive house you can buy costs " + house.price + " Euros.");
-                JOptionPane.showMessageDialog(null, "You need from " + loan.bank + " bank: " + formatter.format(loan.debt));
-                JOptionPane.showMessageDialog(null, "Instalment: " + formatter.format(loan.instalment));
-                JOptionPane.showMessageDialog(null, "Your new indebtedness: " + formatterDecimal.format(user.indebtedness));
-                JOptionPane.showMessageDialog(null, "Money to spend per month: " + formatter.format(user.spendable));
+                iDialog.printMessages(user, house.price, loan);
             }
         }
     }

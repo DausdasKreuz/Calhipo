@@ -9,12 +9,13 @@ public class User {
     public double indebtedness;
     public double spendable;
 
-    public User(String namedata, int initialdata, double incomedata, int expensesdata, double instalments, double indebtednessdata) {
+    public User(String namedata, int initialdata, double incomedata, int expensesdata, double instalmentsdata) {
         name = namedata;
         initial = initialdata;
         income = incomedata;
         expenses = expensesdata;
-        indebtedness = indebtednessdata;
+        instalments = instalmentsdata;
+        indebtedness = (instalments / income);
     }
 
     public User() {
@@ -37,19 +38,15 @@ public class User {
         DataInPanel instalmentsPanel = new DataInPanel();
         instalments = Double.parseDouble(instalmentsPanel.createPanel(50, 10, "Instalments", "How much money do you pay in instalments?"));
         
-        indebtednessBefore = (instalments / income);
+        indebtedness = (instalments / income);
     }
 
     public void calcFreeMoney(double instalment) {
         spendable = income - expenses - instalment;
     }
 
-    public void calcNewIndebtedness(double instalment) {
-        indebtedness = indebtednessBefore + instalment / income;
-    }
-
-    public void calcIndebtedness(double indebtednessFixed) {
-        indebtedness = indebtednessFixed - indebtednessBefore;
+    public void calcIndebtedness(double indebtednessAdded) {
+        indebtedness = indebtednessAdded + indebtedness;
     }
 
     public double maxInstalment(double indebtednessFixed) {
@@ -57,7 +54,7 @@ public class User {
             return (indebtednessFixed * income);
         }
         else {
-            return income - expenses;
+            return (income - expenses);
         }
     }
 }
