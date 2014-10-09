@@ -9,11 +9,13 @@ public class Loan {
     public double instalment;
     public double maxIndebtedness;
 
-    public Loan(String bankData, double differentialData, int periodData, double maxIndebtednessData) {
+    public Loan(String bankData, double differentialData, int periodData, double maxIndebtednessData, double euriborData) {
         bank = bankData;
         differential = differentialData;
         period = periodData;
         maxIndebtedness = maxIndebtednessData;
+        euribor = euriborData;
+        calcRate();
     }
 
     public Loan() {

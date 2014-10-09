@@ -2,27 +2,114 @@ import javax.swing.*;
 import java.text.DecimalFormat;
 
 public class Test {
+    public static void main(String[] args) {
 
-    public static void main (String [] args) {
-        DecimalFormat formatterDecimal = new DecimalFormat("####.##");
-
-        //Conocidos prestamo y casa
-        User user = new User("yo", 20000, 3000, 1500, 360);
-        House house = new House("desiderable", 250000, 100, 0);
-        house.calcInitial(house.price);
-        Loan loan = new Loan("invented", 1.89, 21, 0.4);
-
-        loan.calcInstalment(house.price, house.initial, user.initial);
-        house.calcInitial(house.price);
-        user.calcIndebtedness(loan.instalment);
-
-        if (user.indebtedness <= loan.maxIndebtedness && house.initial <= user.initial) {
-            user.calcFreeMoney(loan.instalment);
-            AvaibleDialog aDialog = new AvaibleDialog();
-            aDialog.printMessages(user, loan);
-
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()) ;
+        } catch(Exception e) {
+            e.printStackTrace();
         }
-        else {
+
+        DecimalFormat formatter = new DecimalFormat("####");
+        DecimalFormat formatterDecimal = new DecimalFormat("####.##");
+        AvaibleDialog aDialog = new AvaibleDialog();
+        NotAvaibleDialog nADialog = new NotAvaibleDialog();
+        InfoDialog iDialog = new InfoDialog();
+
+
+        JOptionPane.showMessageDialog(null, "Wellcome to Calhipo calculator!\n Please, first give me some information");
+        User user = new User("daniel", 20000, 3000, 1500, 360);
+
+        YesNoPanel houseOptionPanel = new YesNoPanel();
+        int houseOption = houseOptionPanel.createYesNoPanel("The house", "Do you know the house you want?");
+
+        if (houseOption == 0) { //conocida la casa
+            House house = new House("arriba", 220000, 35, 0);
+            YesNoPanel loanOptionPanel = new YesNoPanel();
+            int loanOption = loanOptionPanel.createYesNoPanel("The loan", "Do you know the loan conditions?");
+
+            if (loanOption == 0) { //Condiciones del préstamo conocidas
+                Loan loan = new Loan("santander", 1.89, 30, 0.4, 0.5);
+                loan.calcInstalment(house.price, house.initial, user.initial);
+                house.calcInitial(house.price);
+                user.calcIndebtedness(loan.instalment/user.income);
+
+                if (user.indebtedness <= loan.maxIndebtedness && house.initial <= user.initial) {
+                    user.calcFreeMoney(loan.instalment);
+                    aDialog.printMessages(user, loan);
+                }
+
+                else {
+                    nADialog.printMessages(user, house.initial, loan.maxIndebtedness);
+                }
+            }
+
+            if (loanOption == 1) { //condiciones del préstamo NO conocidas
+                JOptionPane.showMessageDialog(null, "I´m going to calculate with data about loans from internet.\nDifferential to euribor: 2%\nEuribor: 0,48%\nPeriod: 21 years\nmaximum indebtedness: 35%");
+                Loan loan = new Loan("Invented", 2, 21, 0.4, 0.5);
+                loan.calcInstalment(house.price, house.initial, user.initial);
+                house.calcInitial(house.price);
+                user.calcIndebtedness(loan.instalment/user.income);
+
+                if (user.indebtedness <= loan.maxIndebtedness && house.initial <= user.initial) {
+                    user.calcFreeMoney(loan.instalment);
+                    aDialog.printMessages(user, loan);
+                }
+
+                else {
+                    nADialog.printMessages(user, house.initial, loan.maxIndebtedness);
+                }
+            }
+        }
+
+
+        if (houseOption == 1) { //Casa NO conocida
+            JOptionPane.showMessageDialog(null, "To do the calculations I will use 100 € for the house expenses.");
+            YesNoPanel loanOptionPanel = new YesNoPanel();
+            int loanOption = loanOptionPanel.createYesNoPanel("The loan", "Do you know the loan conditions?");
+
+            if (loanOption == 0) { //Condiciones del préstamo conocidas
+                Loan loan = new Loan();
+                House house = new House("Desired", 0, 100, 0);
+                house.calcPrice(loan.calcDebt(user.maxInstalment(loan.maxIndebtedness)), user.initial);
+                loan.calcInstalment(house.price, house.initial, user.initial);
+                house.calcInitial(house.price);
+                user.calcIndebtedness(loan.instalment/user.income);
+
+                if (user.initial < house.initial) {
+                    house.calcPrice(user.initial);
+                    house.initial = user.initial;
+                }
+
+                user.calcFreeMoney(loan.instalment);
+                iDialog.printMessages(user, house.price, loan);
+            }
+
+            if (loanOption == 1) { //condiciones del préstamo NO conocidas
+                 JOptionPane.showMessageDialog(null, "I´m going to calculate with data about loans from internet\nDifferential to euribor 2%\nEuribor 0,48%\nPeriod 21 years\nmaximum indebtedness 35%");
+                Loan loan = new Loan("Invented", 2, 21, 0.4, 0.5);
+                House house = new House("Desired", 0, 100, 0);
+
+                user.calcIndebtedness(loan.maxIndebtedness);
+                loan.instalment = user.maxInstalment(user.indebtedness);
+                loan.debt = loan.calcDebt(loan.instalment);
+                house.calcPrice(loan.debt, user.initial);
+                house.calcInitial(house.price);
+
+                if (user.initial < house.initial) {
+                    house.calcPrice(user.initial);
+                    house.initial = user.initial;
+                }
+
+                loan.calcInstalment(house.price, house.initial, user.initial);
+                user.calcIndebtedness(loan.instalment/user.income);
+                user.calcFreeMoney(loan.instalment);
+                iDialog.printMessages(user, house.price, loan);
+            }
         }
     }
 }
+//System.out.printf("%.2f %n", i); //Imprime solo dos decimales
+
+//        while ((!studyOption.equalsIgnoreCase("complete")) && (!studyOption.equalsIgnoreCase("simple"))) {
+//            studyOption = JOptionPane.showInputDialog(null, "Please, indicate one of this options: complete - simple");

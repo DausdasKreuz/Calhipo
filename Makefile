@@ -6,3 +6,6 @@ compile:
 
 clean:
 	rm *.class
+
+save:
+	git add *.java
